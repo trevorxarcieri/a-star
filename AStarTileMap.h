@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <time.h> // For random seed
 
-#define MAP_SIZE 5 // Assuming a 10x10 map
+#define MAP_SIZE 10 // Assuming a 10x10 map
 
 typedef struct AStarTile {
     int x, y; // Tile coordinates
