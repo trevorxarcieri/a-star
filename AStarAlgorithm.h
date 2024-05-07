@@ -5,61 +5,57 @@
 #include "AStarTileHeap.h"
 #include "AStarTileStack.h"
 
-// Function to build the path from destination to source and print it in forward order
+// Traces and prints the path from the destination to the source in forward order.
 void aStarTracePath(AStarTile *goal) {
-    if(goal == NULL) {
-        printf("No path found.\n");
+    if (goal == NULL) {
+        printf("No path found.\n");  // Handle case where no path exists
         return;
     }
     AStarTile *current = goal;
-    // Using a dynamically allocated array to simulate a stack for simplicity.
-    // You could use a linked list or another stack structure as needed.
-    AStarTile **stack = malloc(sizeof(AStarTile*) * MAP_SIZE * MAP_SIZE); // Arbitrary size, ensure it's sufficient for the path
+    AStarTile **stack = malloc(sizeof(AStarTile*) * MAP_SIZE * MAP_SIZE); // Allocate stack to reverse the path
     int top = 0;
 
-    // Trace the path backwards and push the tiles onto the stack
+    // Trace back from goal to source using parent pointers, pushing nodes onto the stack
     while (current) {
         stack[top++] = current;
         current = current->parent;
     }
 
-    // Pop the tiles from the stack to print the path in forward order
+    // Print the path in forward order by popping from the stack
     while (top > 0) {
         current = stack[--top];
         printf("(%d, %d)", current->x, current->y);
-        if (top > 0)
-        {
-            printf("->");
+        if (top > 0) {
+            printf("->");  // Print arrow unless it's the last node
         }
     }
     printf("\n");
-
-    // Free the allocated stack
-    free(stack);
+    free(stack);  // Clean up the dynamically allocated stack
 }
 
-// Function to process a neighboring tile (updates or adds to the open set)
+// Processes a neighboring tile during A* search, updating or adding it to the heap if necessary
 void aStarProcessNeighborTile(AStarTile *current, AStarTile *neighbor, AStarTile *goal) {
     if (neighbor->isObstacle || globalMap.closedSet[neighbor->x][neighbor->y]) {
-        return; // Skip if neighbor is an obstacle or already visited
+        return; // Skip obstacles and tiles already in the closed set
     }
     int tentativeG = current->G + neighbor->C;
+    // Update tile if a cheaper path is found or if it has not been evaluated
     if (tentativeG < neighbor->G || neighbor->parent == NULL) {
         neighbor->parent = current;
         neighbor->G = tentativeG;
         neighbor->H = globalMap.distanceFunction(neighbor->x, neighbor->y, goal->x, goal->y);
         neighbor->F = neighbor->G + neighbor->H;
-        globalMap.evaluated[neighbor->x][neighbor->y] = 1; // Mark the neighbor as evaluated
+        globalMap.evaluated[neighbor->x][neighbor->y] = 1; // Mark as evaluated
         if (!neighbor->inHeap) {
-            heapInsert(neighbor);
+            heapInsert(neighbor); // Add new tile to the heap
             neighbor->inHeap = 1;
         } else {
-            heapDecreaseKey(neighbor);
+            heapDecreaseKey(neighbor); // Update position in the heap
         }
     }
 }
 
-// Function to execute A* search
+// Executes the A* search algorithm starting from the source tile
 AStarTile *aStarRunSearch() {
     AStarTile *start = getTile(globalMap.srcX, globalMap.srcY);
     AStarTile *goal = getTile(globalMap.destX, globalMap.destY);
@@ -71,17 +67,18 @@ AStarTile *aStarRunSearch() {
 
     heapInit();
     heapInsert(start);
-    globalMap.closedSet[start->x][start->y] = 1; // Mark the start as visited
-    globalMap.evaluated[start->x][start->y] = 1; // Mark the start as evaluated
+    globalMap.closedSet[start->x][start->y] = 1; // Mark start as visited
+    globalMap.evaluated[start->x][start->y] = 1; // Mark start as evaluated
 
     while (!heapIsEmpty()) {
-        AStarTile *current = heapExtractMin();
+        AStarTile *current = heapExtractMin(); // Get the tile with the lowest F value
         current->inHeap = 0;
 
-        if (current == goal) {
+        if (current == goal) {  // If goal has been reached, return it
             return goal;
         }
 
+        // Explore all four possible directions from current tile
         const int directions[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
         for (int i = 0; i < 4; i++) {
             int nx = current->x + directions[i][0];
@@ -92,9 +89,9 @@ AStarTile *aStarRunSearch() {
             }
         }
 
-        globalMap.closedSet[current->x][current->y] = 1; // Mark the current as visited
+        globalMap.closedSet[current->x][current->y] = 1; // Mark current as visited
     }
-    return NULL;
+    return NULL; // Return NULL if no path is found
 }
 
 #endif // ASTAR_ALGORITHM_H
