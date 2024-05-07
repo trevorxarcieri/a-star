@@ -19,15 +19,19 @@ double manhattanDistance(int ax, int ay, int bx, int by) {
     return abs(ax - bx) + abs(ay - by);
 }
 
-// Generate random distinct start and end coordinates within the map bounds
+// Generates random distinct coordinates for source and destination within the map.
 void generateRandomCoordinates(int* srcX, int* srcY, int* destX, int* destY, int mapSize) {
-    srand(time(NULL)); // Seed the random number generator
+    srand(time(NULL)); // Seed the random number generator with current time to ensure different results on each run
+
+    // Randomly assign the source's X and Y coordinates within the bounds of the map
     *srcX = rand() % mapSize;
     *srcY = rand() % mapSize;
+
+    // Continuously generate and assign the destination's coordinates to ensure they are different from the source's coordinates
     do {
         *destX = rand() % mapSize;
         *destY = rand() % mapSize;
-    } while (*destX == *srcX && *destY == *srcY); // Ensure destination is different from source
+    } while (*destX == *srcX && *destY == *srcY); // Repeat if both coordinates are the same as the source's coordinates
 }
 
 int main() {
