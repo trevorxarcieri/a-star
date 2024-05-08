@@ -1,0 +1,14 @@
+*The author of this project is __Trevor Arcieri__. Below is a brief note for the instructor regarding evaulation of the assignment:*
+  ## Requirements Deviations
+  **There are no requirements deviations.** Still, there are a couple interesting features that I believe set this project apart from the minimum implied by the project description, and I'd like to highlight those here:
+  1. **Random source and destination placement**: These attributes of the map are chosen randomly at runtime to ensure diversity in test conditions while running the program. I believe this offers the user an impactful way by which to grasp the true process and value of the A* algorithm over multiple runs. 
+  2. **Random obstacle placement and tile cost**: The number of obstacles and their placement is random, where each tile on the map (aside from source and destination tiles) has a 10% chance to become an obstacle. Further, unless a tile is an obstacle (in which case the cost is 0), it has a random tile cost, taken from an equal probability of all discrete integer values 1-9, inclusive.
+  3. **Explicit markings for the source and destination in the map display**: In the project description, I noticed for the map display that it was unclear which end of the final path was the source and which was the destination. This important for the user to know because
+      1. It bears relevance to the direction which created the costs in the cost display.
+      2. When taken with the tiles that have been evaluated, the tiles that have not, and the cost of those evaluated tiles, it can help the user understand the how the A* algorithm finds its path from the source to the destination.
+
+  ## Notes to Run the Program
+  * I used gcc on my Linux machine, and my command to run the program was the following:
+      `gcc -fdiagnostics-color=always -g Project1.c -o Project1.o -lm; ./Project1.o`
+    * The text prior to the semicolon runs `gcc` to compile the C code into the Project1.o object file, then the text after it is a second command that runs the object file once it is compiled. The command on a windows machine would be different, namely `Project1.o` would need to be changed to `Project1.exe`, and `./Project1.o` would need to be changed to `.\Project1.exe`.
+  * On that note, this command was nearly entirely generated automatically by VS code, so your default command to run the program via your IDE may work. Importantly, though, I *did* have to modify the command to add the `-lm` argument. The compiler was not able to find the math library used for `sqrt` and `abs` in Project1.c, so I added `-lm` to instruct the compiler to search the library m (leading to `math.h`) when linking the source code to standard libraries. This enables the compiler to find the math.h standard library on my machine.

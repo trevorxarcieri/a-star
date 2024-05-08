@@ -43,8 +43,8 @@ void mapInit(int srcX, int srcY, int destX, int destY, double (*distanceFunc)(in
         for (int j = 0; j < MAP_SIZE; j++) {
             globalMap.map[i][j].x = i;
             globalMap.map[i][j].y = j;
-            globalMap.map[i][j].isObstacle = (rand() % 10 == 0) && !(i == srcX && j == srcY) && !(i == destX && j == destY); // Ensure source/dest are not obstacles
-            globalMap.map[i][j].C = globalMap.map[i][j].isObstacle ? 0 : (rand() % 9 + 1); // Assign cost, zero if an obstacle
+            globalMap.map[i][j].isObstacle = (rand() % 10 == 0) && !(i == srcX && j == srcY) && !(i == destX && j == destY); // Ensure source/dest are not obstacles, 10% chance of obstacle
+            globalMap.map[i][j].C = globalMap.map[i][j].isObstacle ? 0 : (rand() % 9 + 1); // Assign random cost 1-9 for non-obstacle tiles, otherwise 0
             globalMap.map[i][j].G = 0;
             globalMap.map[i][j].H = 0;
             globalMap.map[i][j].F = 0;
